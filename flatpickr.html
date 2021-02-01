@@ -50,14 +50,16 @@
 			//}
 
 
-			//今日から３ヶ月間に間にある月末しか表示させない
-			var date = new Date('Feb 1, 2021');
+			//今日から３ヶ月間の月の月末しか表示させない
+			var date = new Date();
 			var year = date.getFullYear();
 			var month = date.getMonth() + 1;
+			var date1 =  date.getDate();
 			var maxMonth = month + 2;
 			var maxs = [];
 			var r = 0;
-			for(var i = month; i <= maxMonth ; i++){
+			var selectDate = null;
+			for(var i = month; i <= maxMonth + 1; i++){
 				if(i == 2){
 					if((Math.floor(year % 4 == 0)) && (Math.floor(year % 100 != 0)) || (Math.floor(year % 400 == 0))){
 						max = 29;
@@ -71,6 +73,11 @@
 				}else{
 					max = 31;
 				}
+				if(i <= maxMonth){
+					selectDate += max;
+				}else if((i == maxMonth + 1)){
+					selectDate += (max - date1);
+				}
 				maxs[r] = year + "-" + i + "-" + max;
 				r += 1;
 			}
@@ -81,21 +88,22 @@
 				//今日から
 				//minDate: "today",
 
-
 				//翌月末日までしか表示させない
 				//maxDate: date,
-
 
 				//今から30日後
 				//maxDate: new Date().fp_incr(30),
 
 
 				//今日から３ヶ月先までしか表示させない
+				//minDate: "today",
 				//maxDate: new Date().fp_incr(selectDate),
 
 				//今日から３ヶ月間に間にある月末しか表示させない
+				minDate: "today",
+				maxDate: new Date().fp_incr(selectDate),
 				enable: [
-					maxs[0],maxs[1],maxs[2]
+					maxs[0],maxs[1],maxs[2],maxs[3]
 				],
 
 
