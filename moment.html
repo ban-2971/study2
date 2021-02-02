@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.2/moment.min.js"></script>
+	</head>
+	<body>
+		Date型オブジェクト
+		<input type="text" id="moment_toDate" value="" style="margin-left: 11px; text-align: right; width: 20rem;"><br>
+		指定したフォーマット
+		<input type="text" id="moment_format" value="" style="text-align: right; width: 11rem;"><br>
+		年
+		<input type="text" id="moment_year" value="" style="margin-left: 32px; text-align: right;"><br>
+		月
+		<input type="text" id="moment_month" value="" style="margin-left: 32px; text-align: right;"><br>
+		日
+		<input type="text" id="moment_date" value="" style="margin-left: 32px; text-align: right;"><br>
+		曜日
+		<input type="text" id="moment_day" value="" style="margin-left: 16px; text-align: right;"><br>
+		時
+		<input type="text" id="moment_hours" value="" style="margin-left: 32px; text-align: right;"><br>
+		分
+		<input type="text" id="moment_minutes" value="" style="margin-left: 32px; text-align: right;"><br>
+		秒
+		<input type="text" id="moment_seconds" value="" style="margin-left: 32px; text-align: right;"><br>
+		ミリ秒
+		<input type="text" id="moment_milliseconds" value="" style="text-align: right;"><br>
+
+	</body>
+	<script>
+		$(function(){
+			var week = ["日", "月", "火", "水", "木", "金", "土"];//曜日(日本語)
+			var now = moment();									//現在の時刻が入る
+			console.log(now);
+			$("#moment_toDate").val(now.toDate());				//Date型オブジェクト
+			$("#moment_format").val(now.format('YYYY/MM/DD'));	//指定したフォーマット
+			$("#moment_year").val(now.year());					//年
+			$("#moment_month").val(now.month() + 1);			//月
+			$("#moment_date").val(now.date());					//日
+			$("#moment_day").val(week[now.day()]);				//曜日
+			$("#moment_hours").val(now.hours());				//時
+			$("#moment_minutes").val(now.minutes());			//分
+			$("#moment_seconds").val(now.seconds());			//秒
+			$("#moment_milliseconds").val(now.milliseconds());	//ミリ秒
+
+		});
+	</script>
+</html>
+
