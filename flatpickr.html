@@ -4,117 +4,40 @@
 		<meta charset="UTF-8">
 		<title></title>
 		<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.2/moment.min.js"></script>
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 		<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 		<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
 	</head>
 	<body>
+		<span>今月から５ヶ月間の月末しか表示させない</span><br>
 		<input id="flatpickr" type="text" readonly="readonly"><br>
-		<span>変換後のDateオブジェクト（月初）</span>
-		<span id="parseDateDispFirst"></span><br>
-		<span>再変換後の日付（月初）</span>
+		<span>月初</span>
 		<span id="formatDateDispFirst"></span><br>
-		<span>変換後のDateオブジェクト（月末）</span>
-		<span id="parseDateDispEnd"></span><br>
-		<span>再変換後の日付（月末）</span>
+		<span>月末</span>
 		<span id="formatDateDispEnd"></span>
 	</body>
 	<script>
 		$(function(){
-			//翌月末日までしか表示させない
-			//var date = new Date;
-			//date.setMonth(date.getMonth() + 2, 0);
+			var max = moment().add(5, 'months').endOf('month').format("YYYY-MM-DD");
 
-
-			//今日から３ヶ月先までしか表示させない
-			//var date = new Date;
-			//var year = date.getFullYear();
-			//var month = date.getMonth() + 1;
-			//var maxMonth = month + 2;
-			//var selectDate = null;
-			//for(var i = month; i <= maxMonth; i++){
-			//	if(i == 2){
-			//		if((Math.floor(year % 4 == 0)) && (Math.floor(year % 100 != 0)) || (Math.floor(year % 400 == 0))){
-			//			max = 29;
-			//		}else{
-			//			max = 28;
-			//		}
-			//	// 4, 6, 9, 11月：日の選択肢は1~30日に設定
-			//	}else if(i == 4 || i == 6 || i == 9 || i == 11){
-			//		max = 30;
-			//	// 1, 3, 5, 7, 8, 10, 12月：日の選択肢は1~31日に設定
-			//	}else{
-			//		max = 31;
-			//	}
-			//	selectDate += max;
-			//}
-
-
-			//今日から３ヶ月間の月の月末しか表示させない
-			var date = new Date();
-			var year = date.getFullYear();
-			var month = date.getMonth() + 1;
-			var date1 =  date.getDate();
-			var maxMonth = month + 2;
-			var maxs = [];
-			var r = 0;
-			var selectDate = null;
-			for(var i = month; i <= maxMonth + 1; i++){
-				if(i == 2){
-					if((Math.floor(year % 4 == 0)) && (Math.floor(year % 100 != 0)) || (Math.floor(year % 400 == 0))){
-						max = 29;
-					}else{
-						max = 28;
-					}
-				// 4, 6, 9, 11月：日の選択肢は1~30日に設定
-				}else if(i == 4 || i == 6 || i == 9 || i == 11){
-					max = 30;
-				// 1, 3, 5, 7, 8, 10, 12月：日の選択肢は1~31日に設定
-				}else{
-					max = 31;
-				}
-				if(i <= maxMonth){
-					selectDate += max;
-				}else if((i == maxMonth + 1)){
-					selectDate += (max - date1);
-				}
-				maxs[r] = year + "-" + i + "-" + max;
-				r += 1;
+			var date = [];
+			for(var i = 0; i <= 5; i++){
+				date[i] =  moment().add(i, 'months').endOf('month').format("YYYYMMDD");
 			}
-
+			console.log(date);
 
 			//オプション
 			config = {
-				//今日から
-				//minDate: "today",
-
-				//翌月末日までしか表示させない
-				//maxDate: date,
-
-				//今から30日後
-				//maxDate: new Date().fp_incr(30),
-
-
-				//今日から３ヶ月先までしか表示させない
-				//minDate: "today",
-				//maxDate: new Date().fp_incr(selectDate),
-
 				//今日から３ヶ月間に間にある月末しか表示させない
 				minDate: "today",
-				maxDate: new Date().fp_incr(selectDate),
+				maxDate: max,
+				altInput: true,
+				dateFormat: "Ymd",
+				altFormat: "Y/m/d",
 				enable: [
-					maxs[0],maxs[1],maxs[2],maxs[3]
+					date[0], date[1], date[2], date[3], date[4], date[5]
 				],
-
-
-				//土日選択不可
-				//disable: [
-				//	function(date) {
-				//		var day = date.getDay()
-				//		// 0:日, 1:月, 2:火, 3:水, 4:木, 5:金, 6:土
-				//		return (day === 0 || day === 6);
-				//	}
-				//],
 				"locale": "ja",
 			};
 			var fp = flatpickr("#flatpickr", config);
@@ -122,23 +45,12 @@
 			//選択時
 			$("#flatpickr").change(function(){
 				var time = $(this).val();
-				//Dateオブジェクトに変換
-				var timeObj = fp.parseDate(time);
-
 				//月初
-				timeObj.setDate(1);
-				//日付形式に変換
-				var dateFirst = fp.formatDate(timeObj, "Y-m-d");
-				document.getElementById('parseDateDispFirst').innerHTML = timeObj;
-				document.getElementById('formatDateDispFirst').innerHTML = dateFirst;
-
+				var dateFirst = moment(time, "YYYYMMDD").startOf('month').format("YYYY/MM/DD");
+				$('#formatDateDispFirst').html(dateFirst);
 				//月初
-				timeObj.setMonth(timeObj.getMonth() + 1);
-				timeObj.setDate(0);
-				//日付形式に変換
-				var dateEnd = fp.formatDate(timeObj, "Y-m-d");
-				document.getElementById('parseDateDispEnd').innerHTML = timeObj;
-				document.getElementById('formatDateDispEnd').innerHTML = dateEnd;
+				var dateEnd = moment(time, "YYYYMMDD").endOf('month').format("YYYY/MM/DD");
+				$('#formatDateDispEnd').html(dateEnd);
 			});
 		});
 	</script>

@@ -6,6 +6,7 @@
 		<meta charset="UTF-8">
 		<title></title>
 		<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.2/moment.min.js"></script>
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 		<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/plugins/monthSelect/style.css">
@@ -13,49 +14,42 @@
 		<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
 	</head>
 	<body>
+		<span>今月から５ヶ月先までしか表示しない</span><br>
 		<input id="flatpickr" type="text" readonly="readonly"><br>
-		<span>変換後のDateオブジェクト（月初）</span>
-		<span id="parseDateDispFirst"></span><br>
-		<span>再変換後の日付（月初）</span>
+		<span>月初</span>
 		<span id="formatDateDispFirst"></span><br>
-		<span>変換後のDateオブジェクト（月末）</span>
-		<span id="parseDateDispEnd"></span><br>
-		<span>再変換後の日付（月末）</span>
+		<span>月末</span>
 		<span id="formatDateDispEnd"></span>
 	</body>
 	<script>
 		$(function(){
+			var now = moment();
+			var min = now.format("YYYY-MM");
+			var max = now.add(5, 'months').format("YYYY-MM");
 			//オプション
 			config = {
+				minDate: min,
+				maxDate: max,
+				altInput: true,
 				plugins: [
 					new monthSelectPlugin({
-						dateFormat: "Y-m",
+						dateFormat: "Ym",
+						altFormat: "Y/m",
 					})
 				],
 				"locale": "ja",
 			};
-			var fp = flatpickr("#flatpickr", config);
+			flatpickr("#flatpickr", config);
 
 			//選択時
 			$("#flatpickr").change(function(){
 				var time = $(this).val();
-				//Dateオブジェクトに変換
-				var timeObj = fp.parseDate(time);
-
 				//月初
-				timeObj.setDate(1);
-				//日付形式に変換
-				var dateFirst = fp.formatDate(timeObj, "Y-m-d");
-				document.getElementById('parseDateDispFirst').innerHTML = timeObj;
-				document.getElementById('formatDateDispFirst').innerHTML = dateFirst;
-
+				var dateFirst = moment(time, "YYYYMM").startOf('month').format("YYYY/MM/DD");
+				$('#formatDateDispFirst').html(dateFirst);
 				//月初
-				timeObj.setMonth(timeObj.getMonth() + 1);
-				timeObj.setDate(0);
-				//日付形式に変換
-				var dateEnd = fp.formatDate(timeObj, "Y-m-d");
-				document.getElementById('parseDateDispEnd').innerHTML = timeObj;
-				document.getElementById('formatDateDispEnd').innerHTML = dateEnd;
+				var dateEnd = moment(time, "YYYYMM").endOf('month').format("YYYY/MM/DD");
+				$('#formatDateDispEnd').html(dateEnd);
 			});
 		});
 	</script>
