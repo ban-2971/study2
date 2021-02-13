@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.2/moment.min.js"></script>
+	</head>
+	<body>
+		<select id="year">
+            <option value="0"></option>
+        </select>年
+        <select id="month">
+            <option value="0"></option>
+        </select>月
+        <select id="date">
+            <option value="0"></option>
+        </select>日
+
+        <script>
+            $(function() {
+                var now = moment();
+                var year = now.year();
+                var month = now.month() + 1;
+                var date = now.date();
+
+                var selectedYear = "";
+                var selectedMonth = "";
+
+                for (var i = year; i >= 1950 ; i--){
+                    $('#year').append('<option value="' + i + '">' + i + '</option>');
+                }
+                for (var j = 1; j <= 12; j++){
+                    $('#month').append('<option value="' + j + '">' + j + '</option>');
+                }
+                for (var k = 1; k <= 31; k++){
+                    $('#date').append('<option value="' + k + '">' + k + '</option>');
+                }
+
+                $('#year').change(function() {
+                    selectedYear = $('#year').val();
+                    var lastMonth = 12;
+                    if (selectedYear == year) {
+                        lastMonth = month;
+                    }
+                    $('#month').children('option').remove();
+                    $('#month').append('<option value="' + 0 + '"></option>');
+                    for (var n = 1; n <= lastMonth; n++) {
+                        $('#month').append('<option value="' + n + '">' + n + '</option>');
+                    }
+                });
+
+                $('#year, #month').change(function() {
+                    selectedYear = $('#year').val();
+                    selectedMonth = $('#month').val();
+
+                    if (selectedYear == year && selectedMonth == month ) {
+                        var lastDate = date;
+                    }else{
+                        selectedDate = selectedYear + ("0" + selectedMonth ).substr(-2);
+                        var lastDate = moment(selectedDate, "YYYYMM").endOf('month').format("DD");
+                    }
+
+                    $('#date').children('option').remove();
+                    $('#date').append('<option value="' + 0 + '"></option>');
+                    for (var m = 1; m <= lastDate; m++) {
+                        $('#date').append('<option value="' + m + '">' + m + '</option>');
+                    }
+                });
+
+            });
+
+        </script>
+	</body>
+</html>
